@@ -9,28 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('tbl_penilaian', function (Blueprint $table) {
-            $table->increments('id_penilaian');
-            $table->string('id_alternatif', 2);
-            $table->string('id_kriteria', 5);
-            $table->integer('nilai');
-            $table->integer('tbl_penilaian_id_penilaian')->nullable();
+   public function up(): void
+{
+    Schema::create('tbl_penilaian', function (Blueprint $table) {
+        $table->increments('id_penilaian');
+        $table->string('id_alternatif', 5);
+        $table->string('id_kriteria', 5);
+        $table->integer('nilai');
 
-            $table->foreign('id_alternatif', 'fk_penilaian_alternatif_idx')
-                ->references('id_alternatif')
-                ->on('tbl_alternatif')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+        $table->foreign('id_alternatif')
+            ->references('id_alternatif')
+            ->on('tbl_alternatif')
+            ->onDelete('cascade');
 
-            $table->foreign('id_kriteria', 'fk_penilaian_kriteria_idx')
-                ->references('id_kriteria')
-                ->on('tbl_kriteria')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-        });
-    }
+        $table->foreign('id_kriteria')
+            ->references('id_kriteria')
+            ->on('tbl_kriteria')
+            ->onDelete('cascade');
+    });
+}
 
     /**
      * Reverse the migrations.
