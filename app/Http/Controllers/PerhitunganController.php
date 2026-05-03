@@ -1,14 +1,16 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Alternatif;
 use App\Models\Kriteria;
+use Illuminate\Support\Facades\DB;
 
 class PerhitunganController extends Controller
 {
     public function index()
     {
-        $data = $this->hitungWP();
+        $data = $this->hitungWP(true);
 
         return view('admin.perhitungan.index', [
             'hasil' => $data['hasil'],
@@ -32,7 +34,7 @@ class PerhitunganController extends Controller
         ]);
     }
 
-    private function hitungWP()
+    private function hitungWP($simpanKeDatabase = false)
     {
         $kriterias = Kriteria::all();
 
@@ -41,7 +43,6 @@ class PerhitunganController extends Controller
             ->get();
 
         $totalBobot = $kriterias->sum('bobot');
-
         $bobotNormal = [];
 
         foreach ($kriterias as $kriteria) {
@@ -117,6 +118,18 @@ class PerhitunganController extends Controller
 
         foreach ($hasil as $index => &$row) {
             $row['ranking'] = $index + 1;
+        }
+
+        if ($simpanKeDatabase) {
+            DB::table('tbl_hasil')->truncate();
+
+            foreach ($hasil as $row) {
+                DB::table('tbl_hasil')->insert([
+                    'id_alternatif' => $row['id_alternatif'],
+                    'nilai_v' => $row['nilai_v'],
+                    'ranking' => $row['ranking'],
+                ]);
+            }
         }
 
         return [
