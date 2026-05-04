@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alternatif;
 use App\Models\Hasil;
 use App\Models\Kriteria;
+use Illuminate\Http\Request;
 
 class LandingController extends Controller
 {
@@ -63,7 +64,7 @@ class LandingController extends Controller
 
         return view('landing.detail-cafe', compact('cafe'));
     }
-    
+
 public function rekomendasiAjax(Request $request)
 {
     $request->validate([

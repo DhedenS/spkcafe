@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>SPK Cafe</title>
+    <title>Rekomendasi Cafe</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
@@ -13,7 +13,7 @@
 <nav class="navbar">
     <div class="nav-brand">
         <img src="{{ asset('assets/logo-five.png') }}" alt="Logo">
-        <span>SPK Cafe</span>
+        <span>Rekomendasi Cafe</span>
     </div>
 
     <div class="nav-menu">
@@ -27,7 +27,6 @@
 
 <section class="hero">
     <div class="hero-left">
-        <div class="badge">SPK Rekomendasi Cafe</div>
 
         <h1>Temukan Cafe<br>Terbaik di Bondowoso</h1>
 
