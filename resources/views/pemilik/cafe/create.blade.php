@@ -8,7 +8,16 @@
     <div class="py-6">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div style="background:white; padding:20px; border-radius:10px;">
-
+@if ($errors->any())
+    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+        <strong>Data belum valid:</strong>
+        <ul class="mt-2 list-disc list-inside">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
                 <form action="{{ route('pemilik.cafe.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 

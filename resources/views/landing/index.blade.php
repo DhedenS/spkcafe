@@ -91,53 +91,49 @@
     <h2>Temukan Cafe Terbaik Untuk Anda</h2>
     <p>Rekomendasi cafe terbaik berbasis perhitungan metode Weighted Product</p>
 
-    <form method="GET" action="/" class="filter-form">
-        <select name="suasana">
-            <option value="">Suasana</option>
-            <option value="5">Sangat Nyaman</option>
-            <option value="4">Nyaman</option>
-            <option value="3">Cukup Nyaman</option>
-            <option value="2">Kurang Nyaman</option>
-            <option value="1">Tidak Nyaman</option>
-        </select>
+  <form id="formRekomendasi" class="filter-form">
+    @csrf
 
-        <select name="harga">
-            <option value="">Harga</option>
-            <option value="1">Murah</option>
-            <option value="2">Sedang</option>
-            <option value="3">Mahal</option>
-        </select>
+    <select name="suasana" required>
+        <option value="">Suasana</option>
+        <option value="3">Biasa</option>
+        <option value="4">Nyaman</option>
+        <option value="5">Sangat Nyaman</option>
+    </select>
 
-        <select name="jarak">
-            <option value="">Jarak</option>
-            <option value="1">Dekat</option>
-            <option value="2">Sedang</option>
-            <option value="3">Jauh</option>
-        </select>
+    <select name="harga" required>
+        <option value="">Harga</option>
+        <option value="1">Murah</option>
+        <option value="3">Sedang</option>
+        <option value="5">Mahal</option>
+    </select>
 
-        <select name="parkiran">
-            <option value="">Parkiran</option>
-            <option value="5">Sangat Luas</option>
-            <option value="4">Luas</option>
-            <option value="3">Sedang</option>
-            <option value="2">Kecil</option>
-            <option value="1">Sempit</option>
-        </select>
+    <select name="jarak" required>
+        <option value="">Jarak</option>
+        <option value="1">Dekat</option>
+        <option value="3">Sedang</option>
+        <option value="5">Jauh</option>
+    </select>
 
-        <select name="wifi">
-            <option value="">Wifi</option>
-            <option value="5">Sangat Cepat</option>
-            <option value="4">Cepat</option>
-            <option value="3">Sedang</option>
-            <option value="2">Lambat</option>
-            <option value="1">Sangat Lambat</option>
-        </select>
+    <select name="parkiran" required>
+        <option value="">Parkiran</option>
+        <option value="1">Kecil</option>
+        <option value="3">Sedang</option>
+        <option value="5">Luas</option>
+    </select>
 
-        <button type="submit">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            Cari Rekomendasi
-        </button>
-    </form>
+    <select name="wifi" required>
+        <option value="">Wifi</option>
+        <option value="1">Lambat</option>
+        <option value="3">Sedang</option>
+        <option value="5">Cepat</option>
+    </select>
+
+    <button type="submit">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        Cari Rekomendasi
+    </button>
+</form>
 </section>
 
 <section class="workflow">
@@ -218,6 +214,139 @@
 <div class="copyright">
     © 2026 SPK Cafe. All rights reserved.
 </div>
+<div id="modalRekomendasi" class="modal-overlay">
+    <div class="modal-box modal-large">
+        <button class="modal-close" onclick="closeModalRekomendasi()">×</button>
 
+        <span class="modal-label">HASIL REKOMENDASI</span>
+        <h2>Top 10 Cafe Terbaik</h2>
+        <p class="modal-subtitle">Klik salah satu cafe untuk melihat detail lengkap.</p>
+
+        <div id="hasilRekomendasi" class="recommendation-list"></div>
+    </div>
+</div>
+
+<div id="modalDetailCafe" class="modal-overlay">
+    <div class="modal-box modal-detail">
+        <button class="modal-close" onclick="closeModalDetail()">×</button>
+
+        <div id="detailCafeContent"></div>
+    </div>
+</div>
+
+<script>
+    const formRekomendasi = document.getElementById('formRekomendasi');
+
+    formRekomendasi.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        const response = await fetch("{{ route('rekomendasi.ajax') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json",
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        let html = '';
+
+        if (result.data.length === 0) {
+            html = `<p class="empty-modal">Belum ada cafe yang cocok.</p>`;
+        } else {
+            result.data.forEach((item, index) => {
+                html += `
+                    <div class="recommendation-item" onclick="openDetailCafe('${item.id_alternatif}')">
+                        <div class="rank-badge">#${index + 1}</div>
+
+                        <img src="${item.foto}" alt="${item.nama_cafe}">
+
+                        <div class="recommendation-info">
+                            <h3>${item.nama_cafe}</h3>
+                            <p>${item.alamat ?? '-'}</p>
+
+                            <div class="recommendation-meta">
+                                <span>Nilai V: ${item.nilai_v}</span>
+                                <span>Rp ${item.harga_menu}</span>
+                                <span>${item.jarak} km</span>
+                            </div>
+                        </div>
+
+                        <div class="recommendation-score">
+                            <b>${item.nilai_v}</b>
+                            <small>Skor WP</small>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('hasilRekomendasi').innerHTML = html;
+        document.getElementById('modalRekomendasi').classList.add('show');
+    });
+
+    function closeModalRekomendasi() {
+        document.getElementById('modalRekomendasi').classList.remove('show');
+    }
+
+    async function openDetailCafe(id) {
+        const response = await fetch(`/cafe-detail/${id}`);
+        const cafe = await response.json();
+
+        let menuHtml = '';
+
+        cafe.menu.forEach(menu => {
+            menuHtml += `
+                <li>
+                    <span>${menu.nama_menu}</span>
+                    <b>Rp ${menu.harga}</b>
+                </li>
+            `;
+        });
+
+        document.getElementById('detailCafeContent').innerHTML = `
+            <div class="detail-grid">
+                <div>
+                    <img src="${cafe.foto}" class="detail-main-img">
+
+                    <div class="detail-gallery">
+                        <img src="${cafe.foto}">
+                        <img src="${cafe.foto}">
+                        <img src="${cafe.foto}">
+                    </div>
+                </div>
+
+                <div>
+                    <span class="modal-label">DETAIL CAFE</span>
+                    <h2>${cafe.nama_cafe}</h2>
+                    <p class="detail-address">${cafe.alamat ?? '-'}</p>
+
+                    <div class="detail-spec">
+                        <p><i class="fa-solid fa-couch"></i> Suasana <b>${cafe.suasana}/5</b></p>
+                        <p><i class="fa-solid fa-tag"></i> Harga Rata-rata <b>Rp ${cafe.harga_menu}</b></p>
+                        <p><i class="fa-solid fa-location-dot"></i> Jarak <b>${cafe.jarak} km</b></p>
+                        <p><i class="fa-solid fa-car"></i> Parkiran <b>${cafe.parkiran} m²</b></p>
+                        <p><i class="fa-solid fa-wifi"></i> Wifi <b>${cafe.wifi} Kbps</b></p>
+                    </div>
+
+                    <h3 class="menu-title">Daftar Menu</h3>
+                    <ul class="menu-list">
+                        ${menuHtml}
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalDetailCafe').classList.add('show');
+    }
+
+    function closeModalDetail() {
+        document.getElementById('modalDetailCafe').classList.remove('show');
+    }
+</script>
 </body>
 </html>

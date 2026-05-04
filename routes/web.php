@@ -12,6 +12,10 @@ Route::post('/rekomendasi', [LandingController::class, 'rekomendasi'])->name('re
 Route::get('/cafe/{id}', [LandingController::class, 'detail'])->name('cafe.detail');
   Route::get('/data-cafe', [LandingController::class, 'dataCafe'])->name('data.cafe');
 Route::get('/data-cafe/{id}', [LandingController::class, 'detailCafe'])->name('data.cafe.detail');
+Route::post('/rekomendasi/ajax', [LandingController::class, 'rekomendasiAjax'])->name('rekomendasi.ajax');
+Route::get('/cafe-detail/{id}', [LandingController::class, 'cafeDetailAjax'])->name('cafe.detail.ajax');
+
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', function () {
