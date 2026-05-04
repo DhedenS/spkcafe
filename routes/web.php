@@ -10,11 +10,10 @@ use App\Http\Controllers\PerhitunganController;
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::post('/rekomendasi', [LandingController::class, 'rekomendasi'])->name('rekomendasi');
 Route::get('/cafe/{id}', [LandingController::class, 'detail'])->name('cafe.detail');
-  Route::get('/data-cafe', [LandingController::class, 'dataCafe'])->name('data.cafe');
+Route::get('/data-cafe', [LandingController::class, 'dataCafe'])->name('data.cafe');
 Route::get('/data-cafe/{id}', [LandingController::class, 'detailCafe'])->name('data.cafe.detail');
 Route::post('/rekomendasi/ajax', [LandingController::class, 'rekomendasiAjax'])->name('rekomendasi.ajax');
 Route::get('/cafe-detail/{id}', [LandingController::class, 'cafeDetailAjax'])->name('cafe.detail.ajax');
-
 
 Route::middleware(['auth'])->group(function () {
 
@@ -24,7 +23,7 @@ Route::middleware(['auth'])->group(function () {
         }
         return redirect('/pemilik/cafe');
     })->middleware(['auth'])->name('dashboard');
-  
+
 
   Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users');
@@ -41,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/perhitungan/{id}/detail', [PerhitunganController::class, 'detail'])
     ->name('admin.perhitungan.detail');
 });
-    
+
 Route::middleware(['auth', 'role:pemilik'])->group(function () {
     Route::get('/pemilik/cafe', [PemilikCafeController::class, 'index'])->name('pemilik.cafe');
     Route::get('/pemilik/cafe/create', [PemilikCafeController::class, 'create'])->name('pemilik.cafe.create');
