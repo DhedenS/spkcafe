@@ -6,6 +6,7 @@ use App\Http\Controllers\PemilikCafeController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\PerhitunganController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::post('/rekomendasi', [LandingController::class, 'rekomendasi'])->name('rekomendasi');
@@ -27,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
   
 
   Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users');
     Route::post('/admin/users/{id}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
     Route::post('/admin/users/{id}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
