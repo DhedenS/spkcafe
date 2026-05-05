@@ -252,36 +252,61 @@ a {
 }
 
 .filter-form {
-    margin-top: 34px;
+    margin-top: 38px;
     display: grid;
-    grid-template-columns: repeat(5, 1fr) 1.35fr;
-    gap: 14px;
+    grid-template-columns: repeat(5, minmax(130px, 1fr)) 1.35fr;
+    gap: 16px;
+    align-items: end;
 }
 
-.filter-form select,
-.filter-form button {
-    height: 54px;
-    border-radius: 12px;
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.filter-group label {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    margin-left: 6px;
+}
+
+.filter-group select {
+    width: 100%;
+    height: 58px;
+    border-radius: 14px;
     border: 1px solid rgba(255,255,255,.22);
-    background: rgba(0,0,0,.25);
-    color: #fff;
+    background: rgba(0,0,0,.28);
+    color: #ffffff;
     padding: 0 16px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 800;
     outline: none;
 }
 
-.filter-form option {
-    color: #111;
+.filter-group select option {
+    background: #111111;
+    color: #ffffff;
 }
 
+.btn-cari,
 .filter-form button {
-    background: #fff;
-    color: #050505;
+    height: 58px;
+    border-radius: 14px;
     border: none;
+    background: #ffffff;
+    color: #050505;
+    padding: 0 24px;
+    font-size: 14px;
+    font-weight: 900;
     cursor: pointer;
     transition: .3s;
+    white-space: nowrap;
 }
 
+.btn-cari:hover,
 .filter-form button:hover {
     transform: translateY(-2px);
     box-shadow: 0 16px 30px rgba(255,255,255,.12);
