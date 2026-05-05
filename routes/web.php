@@ -6,6 +6,8 @@ use App\Http\Controllers\PemilikCafeController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\PerhitunganController;
+use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::post('/rekomendasi', [LandingController::class, 'rekomendasi'])->name('rekomendasi');
