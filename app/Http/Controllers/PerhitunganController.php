@@ -43,6 +43,7 @@ class PerhitunganController extends Controller
             ->get();
 
         $totalBobot = $kriterias->sum('bobot');
+
         $bobotNormal = [];
 
         foreach ($kriterias as $kriteria) {
@@ -73,6 +74,11 @@ class PerhitunganController extends Controller
 
             foreach ($alternatif->penilaian as $penilaian) {
                 $idKriteria = $penilaian->id_kriteria;
+
+                if (!isset($bobotNormal[$idKriteria])) {
+                    continue;
+                }
+
                 $nilai = $penilaian->nilai;
                 $bobot = $bobotNormal[$idKriteria]['bobot_normal'];
 
@@ -119,6 +125,8 @@ class PerhitunganController extends Controller
         foreach ($hasil as $index => &$row) {
             $row['ranking'] = $index + 1;
         }
+
+        unset($row);
 
         if ($simpanKeDatabase) {
             DB::table('tbl_hasil')->truncate();
