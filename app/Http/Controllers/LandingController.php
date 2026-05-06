@@ -6,18 +6,16 @@ use App\Models\Alternatif;
 use App\Models\Hasil;
 use App\Models\Kriteria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LandingController extends Controller
 {
-    // ===== LANDING PAGE (HALAMAN UTAMA) =====
     public function index()
     {
-        // semua cafe yang sudah di-approve
         $cafes = Alternatif::where('status', 'approved')
             ->latest()
             ->get();
 
-        // rekomendasi dari hasil WP
         $rekomendasi = Hasil::join('tbl_alternatif', 'tbl_hasil.id_alternatif', '=', 'tbl_alternatif.id_alternatif')
             ->orderBy('ranking')
             ->limit(5)
@@ -26,7 +24,6 @@ class LandingController extends Controller
         return view('landing.index', compact('cafes', 'rekomendasi'));
     }
 
-    // ===== DETAIL CAFE (UNTUK LANDING) =====
     public function detail($id)
     {
         $cafe = Alternatif::with('menu')
@@ -36,7 +33,6 @@ class LandingController extends Controller
         return view('landing.detail', compact('cafe'));
     }
 
-    // ===== HALAMAN DATA CAFE (HALAMAN BARU) =====
     public function dataCafe()
     {
         $cafes = Alternatif::where('status', 'approved')
@@ -54,7 +50,6 @@ class LandingController extends Controller
         ));
     }
 
-    // ===== DETAIL CAFE KHUSUS DATA CAFE =====
     public function detailCafe($id)
     {
         $cafe = Alternatif::with('menu')
@@ -65,121 +60,203 @@ class LandingController extends Controller
         return view('landing.detail-cafe', compact('cafe'));
     }
 
-public function rekomendasiAjax(Request $request)
-{
-    $request->validate([
-        'suasana' => 'required|integer',
-        'harga' => 'required|integer',
-        'jarak' => 'required|integer',
-        'parkiran' => 'required|integer',
-        'wifi' => 'required|integer',
-    ]);
+    public function rekomendasiAjax(Request $request)
+    {
+        $request->validate([
+            'suasana' => 'required|integer',
+            'harga' => 'required|integer',
+            'jarak' => 'required|integer',
+            'parkiran' => 'required|integer',
+            'wifi' => 'required|integer',
+        ]);
 
-    $preferensi = [
-        'C1' => $request->suasana,
-        'C2' => $request->parkiran,
-        'C3' => $request->harga,
-        'C4' => $request->wifi,
-        'C5' => $request->jarak,
-    ];
+        $preferensi = [
+            'C1' => $request->suasana,
+            'C2' => $request->harga,
+            'C3' => $request->jarak,
+            'C4' => $request->parkiran,
+            'C5' => $request->wifi,
+        ];
 
-    $kriterias = Kriteria::all();
-    $alternatifs = Alternatif::with('penilaian')
-        ->where('status', 'approved')
-        ->get();
+        $labelPreferensi = [
+            'suasana' => $this->labelSuasana($request->suasana),
+            'harga' => $this->labelHarga($request->harga),
+            'jarak' => $this->labelJarak($request->jarak),
+            'parkiran' => $this->labelParkiran($request->parkiran),
+            'wifi' => $this->labelWifi($request->wifi),
+        ];
 
-    $totalBobot = $kriterias->sum('bobot');
+        $kriterias = Kriteria::all();
 
-    $bobotNormal = [];
+        $alternatifs = Alternatif::with('penilaian')
+            ->where('status', 'approved')
+            ->get();
 
-    foreach ($kriterias as $kriteria) {
-        $w = $kriteria->bobot / $totalBobot;
+        $totalBobot = $kriterias->sum('bobot');
 
-        if ($kriteria->tipe === 'cost') {
-            $w *= -1;
+        $bobotNormal = [];
+
+        foreach ($kriterias as $kriteria) {
+            $w = $kriteria->bobot / $totalBobot;
+
+            if ($kriteria->tipe === 'cost') {
+                $w *= -1;
+            }
+
+            $bobotNormal[$kriteria->id_kriteria] = $w;
         }
 
-        $bobotNormal[$kriteria->id_kriteria] = $w;
+        $nilaiS = [];
+        $detailCafe = [];
+
+        foreach ($alternatifs as $alternatif) {
+            if ($alternatif->penilaian->count() < 5) {
+                continue;
+            }
+
+            $s = 1;
+
+            foreach ($alternatif->penilaian as $penilaian) {
+                $idKriteria = $penilaian->id_kriteria;
+
+                if (!isset($preferensi[$idKriteria]) || !isset($bobotNormal[$idKriteria])) {
+                    continue;
+                }
+
+                $nilaiCafe = $penilaian->nilai;
+                $nilaiUser = $preferensi[$idKriteria];
+
+                $selisih = abs($nilaiCafe - $nilaiUser);
+                $nilaiKecocokan = max(1, 6 - $selisih);
+
+                $s *= pow($nilaiKecocokan, $bobotNormal[$idKriteria]);
+            }
+
+            $nilaiS[$alternatif->id_alternatif] = $s;
+            $detailCafe[$alternatif->id_alternatif] = $alternatif;
+        }
+
+        $totalS = array_sum($nilaiS);
+
+        $hasil = [];
+
+        foreach ($nilaiS as $idAlternatif => $s) {
+            $cafe = $detailCafe[$idAlternatif];
+
+            $hasil[] = [
+                'id_alternatif' => $cafe->id_alternatif,
+                'nama_cafe' => $cafe->nama_cafe,
+                'alamat' => $cafe->alamat,
+                'foto' => $cafe->foto
+                    ? asset('storage/' . $cafe->foto)
+                    : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80',
+                'harga_menu' => number_format($cafe->harga_menu, 0, ',', '.'),
+                'wifi' => $cafe->kecepatan_wifi,
+                'parkiran' => $cafe->luas_parkiran,
+                'jarak' => $cafe->jarak,
+                'nilai_s' => number_format($s, 6),
+                'nilai_v' => number_format($totalS > 0 ? $s / $totalS : 0, 6),
+            ];
+        }
+
+        usort($hasil, fn ($a, $b) => $b['nilai_v'] <=> $a['nilai_v']);
+
+        $topCafe = $hasil[0] ?? null;
+
+        if ($topCafe) {
+            DB::table('tbl_history')->insert([
+                'suasana' => $labelPreferensi['suasana'],
+                'harga' => $labelPreferensi['harga'],
+                'jarak' => $labelPreferensi['jarak'],
+                'parkiran' => $labelPreferensi['parkiran'],
+                'wifi' => $labelPreferensi['wifi'],
+                'id_alternatif' => $topCafe['id_alternatif'],
+                'hasil_cafe' => $topCafe['nama_cafe'],
+                'created_at' => now(),
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => array_slice($hasil, 0, 10),
+        ]);
     }
 
-    $nilaiS = [];
-    $detailCafe = [];
+    public function cafeDetailAjax($id)
+    {
+        $cafe = Alternatif::with('menu')
+            ->where('status', 'approved')
+            ->where('id_alternatif', $id)
+            ->firstOrFail();
 
-    foreach ($alternatifs as $alternatif) {
-        if ($alternatif->penilaian->count() < 5) {
-            continue;
-        }
-
-        $s = 1;
-
-        foreach ($alternatif->penilaian as $penilaian) {
-            $idKriteria = $penilaian->id_kriteria;
-
-            $nilaiCafe = $penilaian->nilai;
-            $nilaiUser = $preferensi[$idKriteria];
-
-            $selisih = abs($nilaiCafe - $nilaiUser);
-            $nilaiKecocokan = max(1, 6 - $selisih);
-
-            $s *= pow($nilaiKecocokan, $bobotNormal[$idKriteria]);
-        }
-
-        $nilaiS[$alternatif->id_alternatif] = $s;
-        $detailCafe[$alternatif->id_alternatif] = $alternatif;
-    }
-
-    $totalS = array_sum($nilaiS);
-
-    $hasil = [];
-
-    foreach ($nilaiS as $idAlternatif => $s) {
-        $cafe = $detailCafe[$idAlternatif];
-
-        $hasil[] = [
+        return response()->json([
             'id_alternatif' => $cafe->id_alternatif,
             'nama_cafe' => $cafe->nama_cafe,
             'alamat' => $cafe->alamat,
-            'foto' => $cafe->foto ? asset('storage/'.$cafe->foto) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80',
+            'foto' => $cafe->foto
+                ? asset('storage/' . $cafe->foto)
+                : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80',
             'harga_menu' => number_format($cafe->harga_menu, 0, ',', '.'),
             'wifi' => $cafe->kecepatan_wifi,
             'parkiran' => $cafe->luas_parkiran,
             'jarak' => $cafe->jarak,
-            'nilai_s' => number_format($s, 6),
-            'nilai_v' => number_format($totalS > 0 ? $s / $totalS : 0, 6),
-        ];
+            'suasana' => $cafe->suasana,
+            'menu' => $cafe->menu->map(function ($menu) {
+                return [
+                    'nama_menu' => $menu->nama_menu,
+                    'harga' => number_format($menu->harga, 0, ',', '.'),
+                ];
+            }),
+        ]);
     }
 
-    usort($hasil, fn ($a, $b) => $b['nilai_v'] <=> $a['nilai_v']);
+    private function labelSuasana($value)
+    {
+        return match ((int) $value) {
+            3 => 'Biasa',
+            4 => 'Nyaman',
+            5 => 'Sangat Nyaman',
+            default => '-',
+        };
+    }
 
-    return response()->json([
-        'status' => true,
-        'data' => array_slice($hasil, 0, 10),
-    ]);
-}
+    private function labelHarga($value)
+    {
+        return match ((int) $value) {
+            1 => 'Murah',
+            3 => 'Sedang',
+            5 => 'Mahal',
+            default => '-',
+        };
+    }
 
-public function cafeDetailAjax($id)
-{
-    $cafe = Alternatif::with('menu')
-        ->where('status', 'approved')
-        ->where('id_alternatif', $id)
-        ->firstOrFail();
+    private function labelJarak($value)
+    {
+        return match ((int) $value) {
+            1 => 'Dekat',
+            3 => 'Sedang',
+            5 => 'Jauh',
+            default => '-',
+        };
+    }
 
-    return response()->json([
-        'id_alternatif' => $cafe->id_alternatif,
-        'nama_cafe' => $cafe->nama_cafe,
-        'alamat' => $cafe->alamat,
-        'foto' => $cafe->foto ? asset('storage/'.$cafe->foto) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80',
-        'harga_menu' => number_format($cafe->harga_menu, 0, ',', '.'),
-        'wifi' => $cafe->kecepatan_wifi,
-        'parkiran' => $cafe->luas_parkiran,
-        'jarak' => $cafe->jarak,
-        'suasana' => $cafe->suasana,
-        'menu' => $cafe->menu->map(function ($menu) {
-            return [
-                'nama_menu' => $menu->nama_menu,
-                'harga' => number_format($menu->harga, 0, ',', '.'),
-            ];
-        }),
-    ]);
-}
+    private function labelParkiran($value)
+    {
+        return match ((int) $value) {
+            1 => 'Kecil',
+            3 => 'Sedang',
+            5 => 'Luas',
+            default => '-',
+        };
+    }
+
+    private function labelWifi($value)
+    {
+        return match ((int) $value) {
+            1 => 'Lambat',
+            3 => 'Sedang',
+            5 => 'Cepat',
+            default => '-',
+        };
+    }
 }
