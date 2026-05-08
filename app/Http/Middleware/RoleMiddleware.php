@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -8,10 +9,14 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, $role)
     {
-        if (auth()->check() && auth()->user()->role === $role) {
-            return $next($request);
+        if (!auth()->check()) {
+            return redirect()->route('login');
         }
 
-        abort(403, 'Anda tidak punya akses ke halaman ini.');
+        if (auth()->user()->role !== $role) {
+            abort(403, 'Anda tidak punya akses ke halaman ini.');
+        }
+
+        return $next($request);
     }
 }

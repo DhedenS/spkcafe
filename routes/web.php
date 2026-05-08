@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('pemilik.cafe');
     })->name('dashboard');
 
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['auth', 'role:admin', 'no-cache'])->group(function () {
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
             ->name('admin.dashboard');
         Route::get('/admin/users', [AdminUserController::class, 'index'])
@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/history/{id}/detail', [HistoryController::class, 'detail'])
             ->name('admin.history.detail');
     });
-    Route::middleware(['role:pemilik'])->group(function () {
+    Route::middleware(['auth', 'role:pemilik', 'no-cache'])->group(function () {
         Route::get('/pemilik/cafe', [PemilikCafeController::class, 'index'])
             ->name('pemilik.cafe');
         Route::get('/pemilik/cafe/create', [PemilikCafeController::class, 'create'])
