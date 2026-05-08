@@ -127,7 +127,7 @@ class LandingController extends Controller
                 $nilaiUser = $preferensi[$idKriteria];
 
                 $selisih = abs($nilaiCafe - $nilaiUser);
-                $nilaiKecocokan = max(1, 6 - $selisih);
+                $nilaiKecocokan = max(1, 4 - $selisih);
 
                 $s *= pow($nilaiKecocokan, $bobotNormal[$idKriteria]);
             }
@@ -213,9 +213,9 @@ class LandingController extends Controller
     private function labelSuasana($value)
     {
         return match ((int) $value) {
-            3 => 'Biasa',
-            4 => 'Nyaman',
-            5 => 'Sangat Nyaman',
+            1 => 'Biasa',
+            2 => 'Nyaman',
+            3 => 'Sangat Nyaman',
             default => '-',
         };
     }
@@ -223,9 +223,9 @@ class LandingController extends Controller
     private function labelHarga($value)
     {
         return match ((int) $value) {
-            1 => 'Murah',
-            3 => 'Sedang',
-            5 => 'Mahal',
+            3 => 'Murah',
+            2 => 'Sedang',
+            1 => 'Mahal',
             default => '-',
         };
     }
@@ -233,9 +233,9 @@ class LandingController extends Controller
     private function labelJarak($value)
     {
         return match ((int) $value) {
-            1 => 'Dekat',
-            3 => 'Sedang',
-            5 => 'Jauh',
+            3 => 'Dekat',
+            2 => 'Sedang',
+            1 => 'Jauh',
             default => '-',
         };
     }
@@ -244,8 +244,8 @@ class LandingController extends Controller
     {
         return match ((int) $value) {
             1 => 'Kecil',
-            3 => 'Sedang',
-            5 => 'Luas',
+            2 => 'Sedang',
+            3 => 'Luas',
             default => '-',
         };
     }
@@ -254,8 +254,8 @@ class LandingController extends Controller
     {
         return match ((int) $value) {
             1 => 'Lambat',
-            3 => 'Sedang',
-            5 => 'Cepat',
+            2 => 'Sedang',
+            3 => 'Cepat',
             default => '-',
         };
     }

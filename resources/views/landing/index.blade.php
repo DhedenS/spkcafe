@@ -21,9 +21,6 @@
         <div class="nav-menu">
             <a href="/">Dashboard</a>
             <a href="{{ route('data.cafe') }}">Data Cafe</a>
-            <a href="/login" class="login-icon">
-                <i class="fa-regular fa-user"></i>
-            </a>
         </div>
     </nav>
 
@@ -152,9 +149,9 @@
                 <label>Suasana</label>
                 <select name="suasana" required>
                     <option value="">Pilih suasana</option>
-                    <option value="3">Biasa</option>
-                    <option value="4">Nyaman</option>
-                    <option value="5">Sangat Nyaman</option>
+                    <option value="1">Biasa</option>
+                    <option value="2">Nyaman</option>
+                    <option value="3">Sangat Nyaman</option>
                 </select>
             </div>
 
@@ -163,8 +160,8 @@
                 <select name="harga" required>
                     <option value="">Pilih harga</option>
                     <option value="1">Murah</option>
-                    <option value="3">Sedang</option>
-                    <option value="5">Mahal</option>
+                    <option value="2">Sedang</option>
+                    <option value="3">Mahal</option>
                 </select>
             </div>
 
@@ -173,8 +170,8 @@
                 <select name="jarak" required>
                     <option value="">Pilih jarak</option>
                     <option value="1">Dekat</option>
-                    <option value="3">Sedang</option>
-                    <option value="5">Jauh</option>
+                    <option value="2">Sedang</option>
+                    <option value="3">Jauh</option>
                 </select>
             </div>
 
@@ -183,8 +180,8 @@
                 <select name="parkiran" required>
                     <option value="">Pilih parkiran</option>
                     <option value="1">Kecil</option>
-                    <option value="3">Sedang</option>
-                    <option value="5">Luas</option>
+                    <option value="2">Sedang</option>
+                    <option value="3">Luas</option>
                 </select>
             </div>
 
@@ -193,8 +190,8 @@
                 <select name="wifi" required>
                     <option value="">Pilih wifi</option>
                     <option value="1">Lambat</option>
-                    <option value="3">Sedang</option>
-                    <option value="5">Cepat</option>
+                    <option value="2">Sedang</option>
+                    <option value="3">Cepat</option>
                 </select>
             </div>
 

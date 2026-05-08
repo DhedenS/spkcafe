@@ -1,14 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div>
-            <h2 class="font-bold text-2xl text-gray-900">
-                Dashboard Admin
-            </h2>
-            <p class="text-sm text-gray-500 mt-1">
-                Ringkasan data sistem SPK Pemilihan Cafe
-            </p>
-        </div>
-    </x-slot>
+
 
     <div class="py-8 bg-slate-100 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,11 +8,8 @@
             <div class="bg-gradient-to-r from-slate-900 to-slate-700 rounded-3xl shadow-lg p-8 mb-8 text-white">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                     <div>
-                        <p class="text-slate-300 text-sm font-semibold uppercase tracking-widest">
-                            SPK Cafe Admin Panel
-                        </p>
                         <h1 class="text-3xl md:text-4xl font-bold mt-3">
-                            Selamat Datang, {{ Auth::user()->name }}
+                            Selamat Datang {{ Auth::user()->name }}
                         </h1>
                         <p class="text-slate-300 mt-3 max-w-2xl">
                             Kelola user, cafe, kriteria, dan lihat hasil perhitungan Weighted Product dengan mudah.
@@ -159,7 +147,7 @@
                             <span class="text-green-700">→</span>
                         </a>
 
-                        <a href="{{ route('admin.kriteria.index') }}"
+                        <a href="{{ route('admin.kriteria') }}"
                            class="flex items-center justify-between p-4 rounded-2xl bg-yellow-50 hover:bg-yellow-100 transition">
                             <span class="font-bold text-yellow-700">Kelola Kriteria</span>
                             <span class="text-yellow-700">→</span>
