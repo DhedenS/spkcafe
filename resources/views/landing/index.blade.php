@@ -159,9 +159,9 @@
                 <label>Harga</label>
                 <select name="harga" required>
                     <option value="">Pilih harga</option>
-                    <option value="1">Murah</option>
+                    <option value="3">Murah</option>
                     <option value="2">Sedang</option>
-                    <option value="3">Mahal</option>
+                    <option value="1">Mahal</option>
                 </select>
             </div>
 
@@ -169,9 +169,9 @@
                 <label>Jarak</label>
                 <select name="jarak" required>
                     <option value="">Pilih jarak</option>
-                    <option value="1">Dekat</option>
+                    <option value="3">Dekat</option>
                     <option value="2">Sedang</option>
-                    <option value="3">Jauh</option>
+                    <option value="1">Jauh</option>
                 </select>
             </div>
 
