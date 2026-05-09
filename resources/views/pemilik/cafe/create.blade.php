@@ -114,10 +114,8 @@
                     <div>
                         <label>Suasana</label><br>
                         <select name="suasana" required style="width:100%;">
-                            <option value="5">Sangat Nyaman</option>
-                            <option value="4">Nyaman</option>
-                            <option value="3">Cukup Nyaman</option>
-                            <option value="2">Kurang Nyaman</option>
+                            <option value="3">Nyaman</option>
+                            <option value="2">Sedang</option>
                             <option value="1">Tidak Nyaman</option>
                         </select>
                     </div>

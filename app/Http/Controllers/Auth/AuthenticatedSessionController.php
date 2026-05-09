@@ -11,51 +11,41 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
     public function create(): View
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
-public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
-
-    $request->session()->regenerate();
-
-    if (Auth::user()->status !== 'approved') {
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+        $request->session()->regenerate();
+        if (Auth::user()->status !== 'approved') {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return back()->withErrors([
+                'name' => 'Akun Anda belum disetujui oleh admin.',
+            ]);
+        }
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        if (Auth::user()->role === 'pemilik') {
+            return redirect()->route('pemilik.cafe');
+        }
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return back()->withErrors([
-            'name' => 'Akun Anda belum disetujui oleh admin.',
+        return redirect('/')->withErrors([
+            'name' => 'Role akun tidak valid.',
         ]);
     }
-
-    if (Auth::user()->role === 'admin') {
-        return redirect('/admin/users');
-    }
-
-    return redirect('/pemilik/cafe');
-}
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
         return redirect('/');
     }
 }

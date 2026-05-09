@@ -1,126 +1,80 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
+<aside class="fixed left-0 top-0 z-50 h-screen w-72 bg-slate-950 text-white border-r border-slate-800">
+    <div class="h-full flex flex-col">
+
+        <div class="px-6 py-6 border-b border-slate-800">
+            <a href="{{ Auth::user()->role === 'admin' ? route('dashboard') : route('pemilik.cafe') }}"
+               class="flex items-center gap-3">
+                <img src="{{ asset('assets/logo-five.png') }}" class="w-11 h-11 object-contain" alt="Logo">
+
+                <div>
+                    <h1 class="font-bold text-lg">SPK Cafe</h1>
+                    <p class="text-xs text-slate-400">
+                        {{ Auth::user()->role === 'admin' ? 'Admin Panel' : 'Pemilik Cafe' }}
+                    </p>
                 </div>
+            </a>
+        </div>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-        {{ __('Dashboard') }}
-    </x-nav-link>
+        <nav class="flex-1 px-4 py-6 space-y-2">
 
-    @auth
-        @if (Auth::user()->role === 'admin')
-            <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')">
-                Approval User
-            </x-nav-link>
+            @if (Auth::user()->role === 'admin')
+                <a href="{{ route('dashboard') }}"
+                    class="block px-4 py-3 rounded-xl font-semibold transition
+                    {{ request()->routeIs('dashboard') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    Dashboard
+                </a>
 
-            <x-nav-link :href="route('admin.cafe')" :active="request()->routeIs('admin.cafe')">
-                Approval Cafe
-            </x-nav-link>
+                <a href="{{ route('admin.users') }}"
+                    class="block px-4 py-3 rounded-xl font-semibold transition
+                    {{ request()->routeIs('admin.users') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    Approval User
+                </a>
 
-            <x-nav-link :href="route('admin.kriteria.index')" :active="request()->routeIs('admin.kriteria.*')">
-                Kriteria
-            </x-nav-link>
+                <a href="{{ route('admin.cafe') }}"
+                    class="block px-4 py-3 rounded-xl font-semibold transition
+                    {{ request()->routeIs('admin.cafe') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    Approval Cafe
+                </a>
 
-            <x-nav-link :href="route('admin.perhitungan')" :active="request()->routeIs('admin.perhitungan')">
-                Perhitungan WP
-            </x-nav-link>
-        @endif
+                <a href="{{ route('admin.kriteria') }}"
+                    class="block px-4 py-3 rounded-xl font-semibold transition
+                    {{ request()->routeIs('admin.kriteria') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    Kriteria
+                </a>
 
-        @if (Auth::user()->role === 'pemilik')
-            <x-nav-link :href="route('pemilik.cafe')" :active="request()->routeIs('pemilik.cafe')">
-                Cafe Saya
-            </x-nav-link>
-        @endif
-    @endauth
-</div>
-            </div>
+                <a href="{{ route('admin.perhitungan') }}"
+                    class="block px-4 py-3 rounded-xl font-semibold transition
+                    {{ request()->routeIs('admin.perhitungan') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    Perhitungan WP
+                </a>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                <a href="{{ route('admin.history') }}"
+                    class="block px-4 py-3 rounded-xl font-semibold transition
+                    {{ request()->routeIs('admin.history') || request()->routeIs('admin.history.*') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    History Hasil
+                </a>
+            @endif
 
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+            @if (Auth::user()->role === 'pemilik')
+                <a href="{{ route('pemilik.cafe') }}"
+                    class="block px-4 py-3 rounded-xl font-semibold transition
+                    {{ request()->routeIs('pemilik.cafe') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    Cafe Saya
+                </a>
+            @endif
 
-                    <x-slot name="content">
-                        <x-dropdown-link href="#">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+        </nav>
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+        <div class="px-4 py-5 border-t border-slate-800">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                <button type="submit"
+                    class="w-full px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 font-bold transition">
+                    Logout
                 </button>
-            </div>
+            </form>
         </div>
+
     </div>
-
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
-
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link href="#">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
+</aside>
