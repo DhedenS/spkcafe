@@ -28,5 +28,12 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'status' => 'approved',
         ]);
+
+        User::factory()->create([
+            'name' => 'gani',
+            'password' => Hash::make('gani1234'),
+            'role' => 'pemilik',
+            'status' => 'approved',
+        ]);
     }
 }
