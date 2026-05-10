@@ -34,7 +34,9 @@ class PemilikCafeController extends Controller
 
             'luas_parkiran' => 'required|integer',
             'kecepatan_wifi' => 'required|integer',
-            'jarak' => 'required|integer',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'jarak' => 'required|numeric',
             'suasana' => 'required|integer|min:1|max:5',
         ]);
 
@@ -67,6 +69,8 @@ class PemilikCafeController extends Controller
             'harga_menu' => $hargaRataRata,
             'luas_parkiran' => $request->luas_parkiran,
             'kecepatan_wifi' => $request->kecepatan_wifi,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
             'jarak' => $request->jarak,
             'suasana' => $request->suasana,
             'status' => 'pending',
@@ -113,7 +117,9 @@ class PemilikCafeController extends Controller
 
             'luas_parkiran' => 'required|integer',
             'kecepatan_wifi' => 'required|integer',
-            'jarak' => 'required|integer',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'jarak' => 'required|numeric',
             'suasana' => 'required|integer|min:1|max:5',
         ]);
 

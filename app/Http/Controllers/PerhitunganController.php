@@ -79,20 +79,32 @@ class PerhitunganController extends Controller
                     continue;
                 }
 
-                $nilai = $penilaian->nilai;
-                $bobot = $bobotNormal[$idKriteria]['bobot_normal'];
+                $nilai = (float) $penilaian->nilai;
 
-                $nilaiPangkat = pow($nilai, $bobot);
+if ($nilai <= 0) {
+    $nilai = 0.01;
+}
+
+$bobot = $bobotNormal[$idKriteria]['bobot_normal'];
+
+$nilaiPangkat = pow($nilai, $bobot);
                 $s *= $nilaiPangkat;
 
-                $rincian[] = [
-                    'id_kriteria' => $idKriteria,
-                    'nama_kriteria' => $bobotNormal[$idKriteria]['nama_kriteria'],
-                    'tipe' => $bobotNormal[$idKriteria]['tipe'],
-                    'nilai' => $nilai,
-                    'bobot_normal' => $bobot,
-                    'nilai_pangkat' => $nilaiPangkat,
-                ];
+                $bobotTampil = $nilai;
+
+if ($bobotNormal[$idKriteria]['nama_kriteria'] == 'Jarak') {
+    $bobotTampil = $this->bobotJarak($nilai);
+}
+
+$rincian[] = [
+    'id_kriteria' => $idKriteria,
+    'nama_kriteria' => $bobotNormal[$idKriteria]['nama_kriteria'],
+    'tipe' => $bobotNormal[$idKriteria]['tipe'],
+    'nilai_asli' => $nilai,
+    'bobot_tampil' => $bobotTampil,
+    'bobot_normal' => $bobot,
+    'nilai_pangkat' => $nilaiPangkat,
+];
             }
 
             $nilaiS[$alternatif->id_alternatif] = $s;
@@ -134,7 +146,7 @@ class PerhitunganController extends Controller
             foreach ($hasil as $row) {
                 DB::table('tbl_hasil')->insert([
                     'id_alternatif' => $row['id_alternatif'],
-                    'nilai_v' => $row['nilai_v'],
+                    'nilai_v' => is_finite($row['nilai_v']) ? $row['nilai_v'] : 0,
                     'ranking' => $row['ranking'],
                 ]);
             }
@@ -146,4 +158,16 @@ class PerhitunganController extends Controller
             'totalS' => $totalS,
         ];
     }
+    private function bobotJarak($jarak)
+{
+    if ($jarak < 1) {
+        return 3;
+    }
+
+    if ($jarak <= 3) {
+        return 2;
+    }
+
+    return 1;
+}
 }

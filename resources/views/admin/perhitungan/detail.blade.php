@@ -58,7 +58,7 @@
                             <tr class="border-b">
                                 <td class="py-3">{{ $row['nama_kriteria'] }}</td>
                                 <td class="py-3">{{ $row['tipe'] }}</td>
-                                <td class="py-3">{{ $row['nilai'] }}</td>
+                                <td class="py-3">{{ $row['bobot_tampil'] }}</td>
                                 <td class="py-3">{{ number_format($row['bobot_normal'], 6) }}</td>
                                 <td class="py-3">{{ number_format($row['nilai_pangkat'], 6) }}</td>
                             </tr>
