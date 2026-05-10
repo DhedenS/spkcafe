@@ -23,32 +23,32 @@ class AdminCafeController extends Controller
         Penilaian::where('id_alternatif', $id)->delete();
 
         Penilaian::insert([
-            [
-                'id_alternatif' => $id,
-                'id_kriteria' => 'C1',
-                'nilai' => $cafe->suasana,
-            ],
-            [
-                'id_alternatif' => $id,
-                'id_kriteria' => 'C2',
-                'nilai' => $this->konversiParkiran($cafe->luas_parkiran),
-            ],
-            [
-                'id_alternatif' => $id,
-                'id_kriteria' => 'C3',
-                'nilai' => $this->konversiHarga($cafe->harga_menu),
-            ],
-            [
-                'id_alternatif' => $id,
-                'id_kriteria' => 'C4',
-                'nilai' => $this->konversiWifi($cafe->kecepatan_wifi),
-            ],
-            [
-                'id_alternatif' => $id,
-                'id_kriteria' => 'C5',
-                'nilai' => $this->konversiJarak($cafe->jarak),
-            ],
-        ]);
+    [
+        'id_alternatif' => $id,
+        'id_kriteria' => 'C1',
+        'nilai' => $cafe->suasana,
+    ],
+    [
+        'id_alternatif' => $id,
+        'id_kriteria' => 'C2',
+        'nilai' => $this->konversiHarga($cafe->harga_menu),
+    ],
+    [
+        'id_alternatif' => $id,
+        'id_kriteria' => 'C3',
+        'nilai' => max((float) $cafe->jarak, 0.01),
+    ],
+    [
+        'id_alternatif' => $id,
+        'id_kriteria' => 'C4',
+        'nilai' => $this->konversiParkiran($cafe->luas_parkiran),
+    ],
+    [
+        'id_alternatif' => $id,
+        'id_kriteria' => 'C5',
+        'nilai' => $this->konversiWifi($cafe->kecepatan_wifi),
+    ],
+]);
 
         return back()->with('success', 'Cafe berhasil disetujui.');
     }
@@ -90,11 +90,7 @@ class AdminCafeController extends Controller
     }
 
     private function konversiJarak($jarak)
-    {
-        if ($jarak <= 1) return 1;
-        if ($jarak <= 2) return 2;
-        if ($jarak <= 3) return 3;
-        if ($jarak <= 5) return 4;
-        return 5;
-    }
+{
+    return $jarak;
+}
 }

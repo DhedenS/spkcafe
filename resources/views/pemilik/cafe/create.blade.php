@@ -1,4 +1,5 @@
 <x-app-layout>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Ajukan Cafe
@@ -105,9 +106,54 @@
                     <br>
 
                     <div>
-                        <label>Jarak / KM</label><br>
-                        <input type="number" name="jarak" required style="width:100%;">
-                    </div>
+    <label>Lokasi Cafe</label>
+
+    <div id="map" style="height: 350px; width: 100%; border-radius: 12px; margin-top: 10px;"></div>
+
+    <input type="hidden" name="latitude" id="latitude" required>
+    <input type="hidden" name="longitude" id="longitude" required>
+    <input type="hidden" name="jarak" id="jarak" required>
+
+    <div style="margin-top: 15px; padding: 15px; background: #f3f4f6; border-radius: 10px;">
+        <p><b>Jarak dari Alun-alun Bondowoso:</b></p>
+        <p id="jarakText">Belum memilih lokasi</p>
+
+        <p style="margin-top: 8px;"><b>Kriteria Jarak:</b></p>
+        <p id="kriteriaJarak">-</p>
+    </div>
+<div style="margin-top: 20px; border:1px solid #e5e7eb; border-radius:16px; padding:20px;">
+    <h3 style="font-size:22px; font-weight:bold; margin-bottom:15px;">Kriteria Jarak</h3>
+
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="background:#f3f4f6;">
+                <th style="padding:12px; text-align:left;">Pilihan</th>
+                <th style="padding:12px; text-align:left;">Range Jarak</th>
+                <th style="padding:12px; text-align:left;">Bobot</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td style="padding:12px;">Dekat</td>
+                <td style="padding:12px;">&lt; 1 km</td>
+                <td style="padding:12px;">3</td>
+            </tr>
+            <tr>
+                <td style="padding:12px;">Sedang</td>
+                <td style="padding:12px;">1 km - 3 km</td>
+                <td style="padding:12px;">2</td>
+            </tr>
+            <tr>
+                <td style="padding:12px;">Jauh</td>
+                <td style="padding:12px;">&gt; 3 km</td>
+                <td style="padding:12px;">1</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</div>
 
                     <br>
 
@@ -201,4 +247,92 @@
                 'Rp ' + Math.round(rata).toLocaleString('id-ID');
         }
     </script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    const alunAlun = {
+        lat: -7.9131382,
+        lng: 113.8225832
+    };
+
+    const map = L.map('map').setView([alunAlun.lat, alunAlun.lng], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    L.marker([alunAlun.lat, alunAlun.lng])
+        .addTo(map)
+        .bindPopup('Alun-alun Bondowoso')
+        .openPopup();
+
+    let cafeMarker = null;
+
+    map.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+
+        if (cafeMarker) {
+            cafeMarker.setLatLng([lat, lng]);
+        } else {
+            cafeMarker = L.marker([lat, lng]).addTo(map);
+        }
+
+        cafeMarker.bindPopup('Lokasi Cafe').openPopup();
+
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+
+        const jarak = hitungJarak(alunAlun.lat, alunAlun.lng, lat, lng);
+        const jarakBulat = jarak.toFixed(2);
+
+        document.getElementById('jarak').value = jarakBulat;
+        document.getElementById('jarakText').innerText = jarakBulat + ' km';
+
+        const kriteria = tentukanKriteriaJarak(jarak);
+
+        document.getElementById('kriteriaJarak').innerText =
+            kriteria.label + ' | Bobot: ' + kriteria.bobot;
+    });
+
+    function hitungJarak(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c;
+    }
+
+    function toRad(value) {
+        return value * Math.PI / 180;
+    }
+
+    function tentukanKriteriaJarak(jarak) {
+        if (jarak < 1) {
+            return {
+                label: 'Dekat (< 1 km)',
+                bobot: 3
+            };
+        }
+
+        if (jarak <= 3) {
+            return {
+                label: 'Sedang (1 km - 3 km)',
+                bobot: 2
+            };
+        }
+
+        return {
+            label: 'Jauh (> 3 km)',
+            bobot: 1
+        };
+    }
+</script>
 </x-app-layout>

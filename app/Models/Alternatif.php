@@ -24,6 +24,8 @@ class Alternatif extends Model
         'jarak',
         'suasana',
         'status',
+        'latitude',
+        'longitude',
     ];
 
     public function penilaian()

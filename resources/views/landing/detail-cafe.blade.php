@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ asset('css/detail-cafe.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $cafe->nama_cafe }} - SPK Cafe</title>
 
@@ -148,7 +150,18 @@
             </div>
 
         </div>
+            <section class="detail-map-section">
+    <div class="section-label">LOKASI CAFE</div>
+    <h2>Lokasi {{ $cafe->nama_cafe }}</h2>
 
+    <div id="mapDetail"></div>
+
+    <a href="https://www.google.com/maps?q={{ $cafe->latitude }},{{ $cafe->longitude }}"
+       target="_blank"
+       class="map-btn">
+        Buka di Google Maps
+    </a>
+</section>
         {{-- MENU --}}
         <section class="mt-16">
 
@@ -219,7 +232,22 @@
         </section>
 
     </main>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    const cafeLat = {{ $cafe->latitude ?? -7.9131382 }};
+    const cafeLng = {{ $cafe->longitude ?? 113.8225832 }};
 
+    const map = L.map('mapDetail').setView([cafeLat, cafeLng], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    L.marker([cafeLat, cafeLng])
+        .addTo(map)
+        .bindPopup("{{ $cafe->nama_cafe }}")
+        .openPopup();
+</script>
 </body>
 
 </html>
