@@ -54,7 +54,6 @@ class LandingController extends Controller
             ->where('status', 'approved')
             ->where('id_alternatif', $id)
             ->firstOrFail();
-
         return view('landing.detail-cafe', compact('cafe'));
     }
 
