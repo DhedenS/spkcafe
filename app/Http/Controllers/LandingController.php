@@ -20,7 +20,6 @@ class LandingController extends Controller
             ->orderBy('ranking')
             ->limit(5)
             ->get();
-
         return view('landing.index', compact('cafes', 'rekomendasi'));
     }
 
@@ -39,7 +38,6 @@ class LandingController extends Controller
             ->with('menu')
             ->latest()
             ->get();
-
         $totalCafe = $cafes->count();
         $totalKriteria = Kriteria::count();
 
