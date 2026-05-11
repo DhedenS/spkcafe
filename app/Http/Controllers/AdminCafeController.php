@@ -9,6 +9,19 @@ class AdminCafeController extends Controller
     public function index()
     {
         $cafes = Alternatif::with('user')->latest()->get();
+
+        foreach ($cafes as $cafe) {
+            $fotoArray = json_decode($cafe->foto, true);
+
+            if (is_array($fotoArray) && count($fotoArray) > 0) {
+                $cafe->foto_utama = $fotoArray[0];
+                $cafe->semua_foto = $fotoArray;
+            } else {
+                $cafe->foto_utama = null;
+                $cafe->semua_foto = [];
+            }
+        }
+
         return view('admin.cafe.index', compact('cafes'));
     }
 
