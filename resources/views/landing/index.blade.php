@@ -275,7 +275,7 @@
                 result.data.forEach((item, index) => {
                     html += `
                     <div class="recommendation-item" onclick="openDetailCafe('${item.id_alternatif}')">
-                        <div class="rank-badge">#${index + 1}</div>
+                        <div class="rank-badge">${index + 1}</div>
 
                         <img src="${item.foto}" alt="${item.nama_cafe}">
 
@@ -362,6 +362,7 @@
             document.getElementById('modalDetailCafe').classList.remove('show');
         }
     </script>
+
 </body>
 
 </html>

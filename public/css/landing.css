@@ -650,16 +650,15 @@ footer h4 {
     background: rgba(255,255,255,.09);
 }
 
-.rank-badge {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: #fff;
-    color: #050505;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 900;
+.rank-badge{
+    background: transparent;
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    color: white;
+    font-size: 32px;
+    font-weight: 800;
+    display: block;
 }
 
 .recommendation-item img {

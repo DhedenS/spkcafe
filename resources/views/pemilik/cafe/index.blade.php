@@ -38,6 +38,7 @@
                                 <th class="py-4 px-4 text-left text-slate-900 font-bold">Harga Rata-Rata</th>
                                 <th class="py-4 px-4 text-left text-slate-900 font-bold">Wifi</th>
                                 <th class="py-4 px-4 text-left text-slate-900 font-bold">Parkiran</th>
+                                <th class="py-4 px-4 text-center text-slate-900 font-bold">Aksi</th>
                             </tr>
                         </thead>
 
@@ -83,10 +84,37 @@
                                     <td class="py-5 px-4 text-slate-700 whitespace-nowrap">
                                         {{ $cafe->luas_parkiran }} m²
                                     </td>
+                                    <td class="py-5 px-4">
+    <div class="flex items-center justify-center gap-3">
+
+        {{-- EDIT --}}
+        <a href="{{ route('pemilik.cafe.edit', $cafe->id_alternatif) }}"
+           class="text-blue-500 hover:text-blue-700 text-lg transition">
+
+            <i class="fa-regular fa-pen-to-square"></i>
+        </a>
+
+        {{-- DELETE --}}
+        <form action="{{ route('pemilik.cafe.destroy', $cafe->id_alternatif) }}"
+              method="POST"
+              onsubmit="return confirm('Yakin ingin menghapus cafe ini?')">
+
+            @csrf
+            @method('DELETE')
+
+            <button type="submit"
+                    class="text-red-500 hover:text-red-700 text-lg transition">
+
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
+        </form>
+
+    </div>
+</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="py-10 text-center text-slate-500">
+                                    <td colspan="8" class="py-10 text-center text-slate-500">
                                         Belum ada data cafe.
                                     </td>
                                 </tr>

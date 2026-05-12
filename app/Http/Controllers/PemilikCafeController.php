@@ -89,14 +89,11 @@ class PemilikCafeController extends Controller
     }
 
     public function edit($id)
-    {
-        $cafe = Alternatif::with('menu')
-            ->where('user_id', auth()->id())
-            ->where('id_alternatif', $id)
-            ->firstOrFail();
+{
+    $cafe = Alternatif::findOrFail($id);
 
-        return view('pemilik.cafe.edit', compact('cafe'));
-    }
+    return view('pemilik.cafe.edit', compact('cafe'));
+}
 
     public function update(Request $request, $id)
     {
@@ -167,16 +164,11 @@ class PemilikCafeController extends Controller
     }
 
     public function destroy($id)
-    {
-        $cafe = Alternatif::where('user_id', auth()->id())
-            ->where('id_alternatif', $id)
-            ->firstOrFail();
+{
+    $cafe = Alternatif::findOrFail($id);
 
-        MenuCafe::where('id_alternatif', $cafe->id_alternatif)->delete();
+    $cafe->delete();
 
-        $cafe->delete();
-
-        return redirect()->route('pemilik.cafe')
-            ->with('success', 'Cafe berhasil dihapus.');
-    }
+    return back()->with('success', 'Cafe berhasil dihapus');
+}
 }

@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
             ->name('pemilik.cafe.edit');
         Route::put('/pemilik/cafe/{id}', [PemilikCafeController::class, 'update'])
             ->name('pemilik.cafe.update');
-        Route::delete('/pemilik/cafe/{id}', [PemilikCafeController::class, 'destroy'])
+        Route::delete('/pemilik/cafe/{id}',[PemilikCafeController::class, 'destroy'])
             ->name('pemilik.cafe.destroy');
     });
 });

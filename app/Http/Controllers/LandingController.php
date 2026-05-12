@@ -61,50 +61,57 @@ class LandingController extends Controller
     }
 
     public function rekomendasiAjax(Request $request)
-    {
+{
+    try {
         $request->validate([
-            'suasana' => 'required|integer',
-            'harga' => 'required|integer',
-            'jarak' => 'required|integer',
-            'parkiran' => 'required|integer',
-            'wifi' => 'required|integer',
+            'suasana' => 'required',
+            'harga' => 'required',
+            'jarak' => 'required',
+            'parkiran' => 'required',
+            'wifi' => 'required',
         ]);
 
         $preferensi = [
-            'C1' => $request->suasana,
-            'C2' => $request->harga,
-            'C3' => $request->jarak,
-            'C4' => $request->parkiran,
-            'C5' => $request->wifi,
+            'C1' => (float) $request->suasana,
+            'C2' => (float) $request->harga,
+            'C3' => (float) $request->jarak,
+            'C4' => (float) $request->parkiran,
+            'C5' => (float) $request->wifi,
         ];
 
-        $labelPreferensi = [
-            'suasana' => $this->labelSuasana($request->suasana),
-            'harga' => $this->labelHarga($request->harga),
-            'jarak' => $this->labelJarak($request->jarak),
-            'parkiran' => $this->labelParkiran($request->parkiran),
-            'wifi' => $this->labelWifi($request->wifi),
-        ];
+        $kriterias = \App\Models\Kriteria::all();
 
-        $kriterias = Kriteria::all();
-
-        $alternatifs = Alternatif::with('penilaian')
-            ->where('status', 'approved')
-            ->get();
+        if ($kriterias->count() == 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data kriteria masih kosong.'
+            ], 500);
+        }
 
         $totalBobot = $kriterias->sum('bobot');
+
+        if ($totalBobot <= 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Total bobot kriteria tidak valid.'
+            ], 500);
+        }
 
         $bobotNormal = [];
 
         foreach ($kriterias as $kriteria) {
             $w = $kriteria->bobot / $totalBobot;
 
-            if ($kriteria->tipe === 'cost') {
+            if ($kriteria->tipe == 'cost') {
                 $w *= -1;
             }
 
             $bobotNormal[$kriteria->id_kriteria] = $w;
         }
+
+        $alternatifs = \App\Models\Alternatif::with('penilaian')
+            ->where('status', 'approved')
+            ->get();
 
         $nilaiS = [];
         $detailCafe = [];
@@ -123,8 +130,16 @@ class LandingController extends Controller
                     continue;
                 }
 
-                $nilaiCafe = $penilaian->nilai;
-                $nilaiUser = $preferensi[$idKriteria];
+                $nilaiCafe = (float) $penilaian->nilai;
+                $nilaiUser = (float) $preferensi[$idKriteria];
+
+                if ($nilaiCafe <= 0) {
+                    $nilaiCafe = 0.01;
+                }
+
+                if ($nilaiUser <= 0) {
+                    $nilaiUser = 1;
+                }
 
                 $selisih = abs($nilaiCafe - $nilaiUser);
                 $nilaiKecocokan = max(1, 4 - $selisih);
@@ -132,55 +147,59 @@ class LandingController extends Controller
                 $s *= pow($nilaiKecocokan, $bobotNormal[$idKriteria]);
             }
 
-            $nilaiS[$alternatif->id_alternatif] = $s;
-            $detailCafe[$alternatif->id_alternatif] = $alternatif;
+            if (is_finite($s)) {
+                $nilaiS[$alternatif->id_alternatif] = $s;
+                $detailCafe[$alternatif->id_alternatif] = $alternatif;
+            }
         }
 
         $totalS = array_sum($nilaiS);
+
+        if ($totalS <= 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Belum ada data cafe approved dengan penilaian lengkap.'
+            ], 500);
+        }
 
         $hasil = [];
 
         foreach ($nilaiS as $idAlternatif => $s) {
             $cafe = $detailCafe[$idAlternatif];
+            $nilaiV = $s / $totalS;
 
             $hasil[] = [
                 'id_alternatif' => $cafe->id_alternatif,
                 'nama_cafe' => $cafe->nama_cafe,
                 'alamat' => $cafe->alamat,
                 'foto' => $cafe->foto
-                    ? asset('storage/' . $cafe->foto)
+                    ? asset('storage/'.$cafe->foto)
                     : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80',
                 'harga_menu' => number_format($cafe->harga_menu, 0, ',', '.'),
                 'wifi' => $cafe->kecepatan_wifi,
                 'parkiran' => $cafe->luas_parkiran,
                 'jarak' => $cafe->jarak,
                 'nilai_s' => number_format($s, 6),
-                'nilai_v' => number_format($totalS > 0 ? $s / $totalS : 0, 6),
+                'nilai_v' => number_format($nilaiV, 6),
             ];
         }
 
         usort($hasil, fn ($a, $b) => $b['nilai_v'] <=> $a['nilai_v']);
 
-        $topCafe = $hasil[0] ?? null;
-
-        if ($topCafe) {
-            DB::table('tbl_history')->insert([
-                'suasana' => $labelPreferensi['suasana'],
-                'harga' => $labelPreferensi['harga'],
-                'jarak' => $labelPreferensi['jarak'],
-                'parkiran' => $labelPreferensi['parkiran'],
-                'wifi' => $labelPreferensi['wifi'],
-                'id_alternatif' => $topCafe['id_alternatif'],
-                'hasil_cafe' => $topCafe['nama_cafe'],
-                'created_at' => now(),
-            ]);
-        }
-
         return response()->json([
             'status' => true,
             'data' => array_slice($hasil, 0, 10),
         ]);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => false,
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+        ], 500);
     }
+}
 
     public function cafeDetailAjax($id)
     {
