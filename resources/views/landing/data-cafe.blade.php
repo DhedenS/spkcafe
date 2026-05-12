@@ -90,9 +90,7 @@
 
                     <div class="image-wrap">
                         <span class="number">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-
-                        <img src="{{ $cafe->foto ? asset('storage/' . $cafe->foto) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80' }}"
-                            alt="{{ $cafe->nama_cafe }}">
+                        <img src="{{ $cafe->foto ? asset('storage/' . json_decode($cafe->foto)[0]) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=900&q=80' }}" alt="{{ $cafe->nama_cafe }}">
                     </div>
 
                     <div class="card-content">

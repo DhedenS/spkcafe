@@ -31,11 +31,10 @@
                             @forelse ($cafes as $cafe)
                                 <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
                                     <td class="py-5 px-4">
-                                        @if ($cafe->foto)
-                                            <img src="{{ asset('storage/' . $cafe->foto) }}"
-                                                 class="w-28 h-28 object-contain rounded-2xl bg-white border border-slate-200 p-2">
+                                        @if ($cafe->foto_utama)
+                                            <img src="{{ asset('storage/' . $cafe->foto_utama) }}" alt="{{ $cafe->nama_cafe }}">
                                         @else
-                                            <span class="text-slate-400">-</span>
+                                            <img src="{{ asset('images/no-image.png') }}" alt="Tidak ada foto">
                                         @endif
                                     </td>
 

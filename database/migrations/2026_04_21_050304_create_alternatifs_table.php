@@ -23,7 +23,7 @@ return new class extends Migration
         $table->string('nama_pemilik')->nullable();
         $table->string('no_hp')->nullable();
         $table->text('alamat')->nullable();
-        $table->string('foto')->nullable();
+        $table->text('foto')->nullable();
 
         $table->integer('harga_menu')->nullable();
         $table->integer('luas_parkiran')->nullable();

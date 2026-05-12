@@ -6,6 +6,7 @@ use App\Http\Controllers\PemilikCafeController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\PerhitunganController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HistoryController;
 
