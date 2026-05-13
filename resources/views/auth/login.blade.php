@@ -16,7 +16,7 @@
                 <p class="text-gray-400 mt-2">Masuk untuk melanjutkan</p>
             </div>
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+            <form method="POST" action="{{ route('login') }}" class="space-y-5" novalidate>
                 @csrf
 
                 <div>

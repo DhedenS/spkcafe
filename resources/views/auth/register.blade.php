@@ -14,7 +14,7 @@
                 <p class="text-gray-400 mt-2">Daftar sebagai pemilik cafe</p>
             </div>
 
-            <form method="POST" action="{{ route('register') }}" class="space-y-5">
+            <form method="POST" action="{{ route('register') }}" class="space-y-5" novalidate>
                 @csrf
 
                 <div>

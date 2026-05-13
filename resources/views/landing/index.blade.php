@@ -240,14 +240,6 @@
         </div>
     </div>
 
-    <div id="modalDetailCafe" class="modal-overlay">
-        <div class="modal-box modal-detail">
-            <button class="modal-close" onclick="closeModalDetail()">×</button>
-
-            <div id="detailCafeContent"></div>
-        </div>
-    </div>
-
     <script>
         const formRekomendasi = document.getElementById('formRekomendasi');
 
@@ -269,12 +261,12 @@
 
             let html = '';
 
-            if (result.data.length === 0) {
+            if (!result.data || result.data.length === 0) {
                 html = `<p class="empty-modal">Belum ada cafe yang cocok.</p>`;
             } else {
                 result.data.forEach((item, index) => {
                     html += `
-                    <div class="recommendation-item" onclick="openDetailCafe('${item.id_alternatif}')">
+                    <a href="/data-cafe/${item.id_alternatif}" class="recommendation-item">
                         <div class="rank-badge">${index + 1}</div>
 
                         <img src="${item.foto}" alt="${item.nama_cafe}">
@@ -294,8 +286,8 @@
                             <b>${item.nilai_v}</b>
                             <small>Skor WP</small>
                         </div>
-                    </div>
-                `;
+                    </a>
+                    `;
                 });
             }
 
@@ -305,61 +297,6 @@
 
         function closeModalRekomendasi() {
             document.getElementById('modalRekomendasi').classList.remove('show');
-        }
-
-        async function openDetailCafe(id) {
-            const response = await fetch(`/cafe-detail/${id}`);
-            const cafe = await response.json();
-
-            let menuHtml = '';
-
-            cafe.menu.forEach(menu => {
-                menuHtml += `
-                <li>
-                    <span>${menu.nama_menu}</span>
-                    <b>Rp ${menu.harga}</b>
-                </li>
-            `;
-            });
-
-            document.getElementById('detailCafeContent').innerHTML = `
-            <div class="detail-grid">
-                <div>
-                    <img src="${cafe.foto}" class="detail-main-img">
-
-                    <div class="detail-gallery">
-                        <img src="${cafe.foto}">
-                        <img src="${cafe.foto}">
-                        <img src="${cafe.foto}">
-                    </div>
-                </div>
-
-                <div>
-                    <span class="modal-label">DETAIL CAFE</span>
-                    <h2>${cafe.nama_cafe}</h2>
-                    <p class="detail-address">${cafe.alamat ?? '-'}</p>
-
-                    <div class="detail-spec">
-                        <p><i class="fa-solid fa-couch"></i> Suasana <b>${cafe.suasana}/5</b></p>
-                        <p><i class="fa-solid fa-tag"></i> Harga Rata-rata <b>Rp ${cafe.harga_menu}</b></p>
-                        <p><i class="fa-solid fa-location-dot"></i> Jarak <b>${cafe.jarak} km</b></p>
-                        <p><i class="fa-solid fa-car"></i> Parkiran <b>${cafe.parkiran} m²</b></p>
-                        <p><i class="fa-solid fa-wifi"></i> Wifi <b>${cafe.wifi} Kbps</b></p>
-                    </div>
-
-                    <h3 class="menu-title">Daftar Menu</h3>
-                    <ul class="menu-list">
-                        ${menuHtml}
-                    </ul>
-                </div>
-            </div>
-        `;
-
-            document.getElementById('modalDetailCafe').classList.add('show');
-        }
-
-        function closeModalDetail() {
-            document.getElementById('modalDetailCafe').classList.remove('show');
         }
     </script>
 
