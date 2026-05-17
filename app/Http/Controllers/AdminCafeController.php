@@ -39,12 +39,12 @@ class AdminCafeController extends Controller
     [
         'id_alternatif' => $id,
         'id_kriteria' => 'C1',
-        'nilai' => $cafe->Suasana,
+        'nilai' => $cafe->suasana,
     ],
     [
         'id_alternatif' => $id,
         'id_kriteria' => 'C2',
-        'nilai' => $this->konversiHarga($cafe->Harga),
+        'nilai' => $this->konversiHarga($cafe->harga),
     ],
     [
         'id_alternatif' => $id,
@@ -54,12 +54,12 @@ class AdminCafeController extends Controller
     [
         'id_alternatif' => $id,
         'id_kriteria' => 'C4',
-        'nilai' => $this->konversiParkiran($cafe->Parkiran),
+        'nilai' => $this->konversiParkiran($cafe->parkiran),
     ],
     [
         'id_alternatif' => $id,
         'id_kriteria' => 'C5',
-        'nilai' => $this->konversiWifi($cafe->Wifi),
+        'nilai' => $this->konversiWifi($cafe->wifi),
     ],
 ]);
 
