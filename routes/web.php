@@ -42,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
             ->name('admin.cafe.approve');
         Route::post('/admin/cafe/{id}/reject', [AdminCafeController::class, 'reject'])
             ->name('admin.cafe.reject');
+        Route::delete('/admin/cafe/delete/{id}', [AdminCafeController::class, 'deleteCafe'])
+            ->name('admin.cafe.delete');
         Route::get('/admin/kriteria', [KriteriaController::class, 'index'])
             ->name('admin.kriteria');
         Route::get('/admin/perhitungan', [PerhitunganController::class, 'index'])

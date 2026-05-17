@@ -38,27 +38,27 @@ class AdminCafeController extends Controller
         Penilaian::insert([
     [
         'id_alternatif' => $id,
-        'id_kriteria' => 'C1',
+        'id_kriteria' => '1',
         'nilai' => $cafe->suasana,
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => 'C2',
+        'id_kriteria' => '2',
         'nilai' => $this->konversiHarga($cafe->harga_menu),
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => 'C3',
+        'id_kriteria' => '3',
         'nilai' => max((float) $cafe->jarak, 0.01),
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => 'C4',
+        'id_kriteria' => '4',
         'nilai' => $this->konversiParkiran($cafe->luas_parkiran),
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => 'C5',
+        'id_kriteria' => '5',
         'nilai' => $this->konversiWifi($cafe->kecepatan_wifi),
     ],
 ]);
@@ -105,5 +105,13 @@ class AdminCafeController extends Controller
     private function konversiJarak($jarak)
 {
     return $jarak;
+}
+public function deleteCafe($id)
+{
+    $cafe = Alternatif::findOrFail($id);
+
+    $cafe->delete();
+
+    return back()->with('success', 'Cafe berhasil dihapus');
 }
 }

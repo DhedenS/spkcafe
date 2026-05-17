@@ -30,83 +30,146 @@
                         <tbody>
                             @forelse ($cafes as $cafe)
                                 <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+
+                                    {{-- FOTO --}}
                                     <td class="py-5 px-4">
                                         @if ($cafe->foto_utama)
-                                            <img src="{{ asset('storage/' . $cafe->foto_utama) }}" alt="{{ $cafe->nama_cafe }}">
+                                            <img src="{{ asset('storage/' . $cafe->foto_utama) }}"
+                                                alt="{{ $cafe->nama_cafe }}"
+                                                class="w-24 h-20 object-cover rounded-xl">
                                         @else
-                                            <img src="{{ asset('images/no-image.png') }}" alt="Tidak ada foto">
+                                            <img src="{{ asset('images/no-image.png') }}"
+                                                alt="Tidak ada foto"
+                                                class="w-24 h-20 object-cover rounded-xl">
                                         @endif
                                     </td>
 
+                                    {{-- NAMA CAFE --}}
                                     <td class="py-5 px-4">
-                                        <h3 class="font-bold text-slate-900">
+                                        <h3 class="font-bold text-slate-900 text-lg">
                                             {{ $cafe->nama_cafe }}
                                         </h3>
+
                                         <p class="text-sm text-slate-500 mt-1">
                                             {{ $cafe->alamat }}
                                         </p>
                                     </td>
 
+                                    {{-- PEMILIK --}}
                                     <td class="py-5 px-4 font-semibold text-slate-700">
                                         {{ $cafe->nama_pemilik }}
                                     </td>
 
+                                    {{-- STATUS --}}
                                     <td class="py-5 px-4">
+
                                         @if ($cafe->status == 'pending')
-                                            <span class="px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 text-sm font-bold">
+                                            <span
+                                                class="px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 text-sm font-bold">
                                                 Pending
                                             </span>
+
                                         @elseif ($cafe->status == 'approved')
-                                            <span class="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-bold">
+                                            <span
+                                                class="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-bold">
                                                 Approved
                                             </span>
+
                                         @elseif ($cafe->status == 'rejected')
-                                            <span class="px-4 py-2 rounded-full bg-red-100 text-red-700 text-sm font-bold">
+                                            <span
+                                                class="px-4 py-2 rounded-full bg-red-100 text-red-700 text-sm font-bold">
                                                 Rejected
                                             </span>
                                         @endif
+
                                     </td>
 
+                                    {{-- AKSI --}}
                                     <td class="py-5 px-4">
-                                        <div class="flex gap-3 items-center">
+                                        <div class="flex gap-3 items-center flex-wrap">
+
+                                            {{-- STATUS PENDING --}}
                                             @if ($cafe->status == 'pending')
-                                                <form action="{{ route('admin.cafe.approve', $cafe->id_alternatif) }}" method="POST">
+
+                                                {{-- APPROVE --}}
+                                                <form action="{{ route('admin.cafe.approve', $cafe->id_alternatif) }}"
+                                                    method="POST">
                                                     @csrf
-                                                    <button class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl font-bold transition">
+
+                                                    <button
+                                                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl font-bold transition">
                                                         Approve
                                                     </button>
                                                 </form>
 
-                                                <form action="{{ route('admin.cafe.reject', $cafe->id_alternatif) }}" method="POST">
+                                                {{-- REJECT --}}
+                                                <form action="{{ route('admin.cafe.reject', $cafe->id_alternatif) }}"
+                                                    method="POST">
                                                     @csrf
-                                                    <button class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl font-bold transition">
+
+                                                    <button
+                                                        class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl font-bold transition">
                                                         Reject
                                                     </button>
                                                 </form>
+
+                                            {{-- STATUS APPROVED --}}
                                             @elseif ($cafe->status == 'approved')
-                                                <form action="{{ route('admin.cafe.reject', $cafe->id_alternatif) }}" method="POST">
+
+                                                {{-- REJECT --}}
+                                                <form action="{{ route('admin.cafe.reject', $cafe->id_alternatif) }}"
+                                                    method="POST">
                                                     @csrf
-                                                    <button class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl font-bold transition">
+
+                                                    <button
+                                                        class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl font-bold transition">
                                                         Reject
                                                     </button>
                                                 </form>
+
+                                            {{-- STATUS REJECTED --}}
                                             @elseif ($cafe->status == 'rejected')
-                                                <form action="{{ route('admin.cafe.approve', $cafe->id_alternatif) }}" method="POST">
+
+                                                {{-- APPROVE --}}
+                                                <form action="{{ route('admin.cafe.approve', $cafe->id_alternatif) }}"
+                                                    method="POST">
                                                     @csrf
-                                                    <button class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl font-bold transition">
+
+                                                    <button
+                                                        class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-xl font-bold transition">
                                                         Approve
                                                     </button>
                                                 </form>
+
                                             @endif
+
+                                            {{-- DELETE --}}
+                                            <form action="{{ route('admin.cafe.delete', $cafe->id_alternatif) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Yakin ingin menghapus cafe ini?')">
+
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button
+                                                    class="bg-slate-800 hover:bg-black text-white px-5 py-2 rounded-xl font-bold transition">
+                                                    Delete
+                                                </button>
+                                            </form>
+
                                         </div>
                                     </td>
+
                                 </tr>
+
                             @empty
+
                                 <tr>
                                     <td colspan="5" class="py-10 text-center text-slate-500">
                                         Belum ada pengajuan cafe.
                                     </td>
                                 </tr>
+
                             @endforelse
                         </tbody>
                     </table>
