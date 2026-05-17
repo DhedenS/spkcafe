@@ -38,28 +38,28 @@ class AdminCafeController extends Controller
         Penilaian::insert([
     [
         'id_alternatif' => $id,
-        'id_kriteria' => '1',
-        'nilai' => $cafe->suasana,
+        'id_kriteria' => 'C1',
+        'nilai' => $cafe->Suasana,
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => '2',
-        'nilai' => $this->konversiHarga($cafe->harga_menu),
+        'id_kriteria' => 'C2',
+        'nilai' => $this->konversiHarga($cafe->Harga),
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => '3',
+        'id_kriteria' => 'C3',
         'nilai' => max((float) $cafe->jarak, 0.01),
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => '4',
-        'nilai' => $this->konversiParkiran($cafe->luas_parkiran),
+        'id_kriteria' => 'C4',
+        'nilai' => $this->konversiParkiran($cafe->Parkiran),
     ],
     [
         'id_alternatif' => $id,
-        'id_kriteria' => '5',
-        'nilai' => $this->konversiWifi($cafe->kecepatan_wifi),
+        'id_kriteria' => 'C5',
+        'nilai' => $this->konversiWifi($cafe->Wifi),
     ],
 ]);
 
