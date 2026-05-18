@@ -5,7 +5,7 @@
             {{-- HEADER --}}
             <div class="mb-8">
                 <h1 class="text-4xl font-bold text-slate-900 mt-2">
-                    Approval Pengajuan Cafe
+                    Data Cafe
                 </h1>
 
                 <p class="text-slate-500 mt-3">

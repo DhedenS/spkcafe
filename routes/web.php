@@ -36,6 +36,8 @@ Route::middleware(['auth'])->group(function () {
             ->name('admin.users.approve');
         Route::post('/admin/users/{id}/reject', [AdminUserController::class, 'reject'])
             ->name('admin.users.reject');
+        Route::delete('/admin/users/delete/{id}', [AdminUserController::class, 'destroy'])
+            ->name('admin.users.delete');
         Route::get('/admin/cafe', [AdminCafeController::class, 'index'])
             ->name('admin.cafe');
         Route::post('/admin/cafe/{id}/approve', [AdminCafeController::class, 'approve'])

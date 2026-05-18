@@ -18,7 +18,7 @@
 
                     <a href="{{ route('admin.cafe') }}"
                        class="bg-white text-slate-900 px-6 py-3 rounded-2xl font-bold shadow hover:bg-slate-100 transition text-center">
-                        Cek Approval Cafe
+                        Cek Data Cafe
                     </a>
                 </div>
             </div>
@@ -137,13 +137,13 @@
                     <div class="space-y-3">
                         <a href="{{ route('admin.users') }}"
                            class="flex items-center justify-between p-4 rounded-2xl bg-blue-50 hover:bg-blue-100 transition">
-                            <span class="font-bold text-blue-700">Approval User</span>
+                            <span class="font-bold text-blue-700">Data Pemilik</span>
                             <span class="text-blue-700">→</span>
                         </a>
 
                         <a href="{{ route('admin.cafe') }}"
                            class="flex items-center justify-between p-4 rounded-2xl bg-green-50 hover:bg-green-100 transition">
-                            <span class="font-bold text-green-700">Approval Cafe</span>
+                            <span class="font-bold text-green-700">Data Cafe</span>
                             <span class="text-green-700">→</span>
                         </a>
 

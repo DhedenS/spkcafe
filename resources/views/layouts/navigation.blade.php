@@ -21,19 +21,19 @@
                 <a href="{{ route('dashboard') }}"
                     class="block px-4 py-3 rounded-xl font-semibold transition
                     {{ request()->routeIs('dashboard') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                    Dashboard
+                    Beranda
                 </a>
 
                 <a href="{{ route('admin.users') }}"
                     class="block px-4 py-3 rounded-xl font-semibold transition
                     {{ request()->routeIs('admin.users') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                    Approval User
+                    Data Pemilik
                 </a>
 
                 <a href="{{ route('admin.cafe') }}"
                     class="block px-4 py-3 rounded-xl font-semibold transition
                     {{ request()->routeIs('admin.cafe') ? 'bg-white text-slate-950' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
-                    Approval Cafe
+                    Data Cafe
                 </a>
 
                 <a href="{{ route('admin.kriteria') }}"

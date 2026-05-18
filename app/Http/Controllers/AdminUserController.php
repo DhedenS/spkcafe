@@ -32,4 +32,11 @@ class AdminUserController extends Controller
 
     return redirect()->back()->with('success', 'User berhasil di-reject.');
 }
+
+    public function destroy($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        $user->delete();
+        return redirect()->back()->with('success', 'User berhasil dihapus.');
+    }
 }

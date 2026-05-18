@@ -7,7 +7,7 @@
               
 
                 <h1 class="text-4xl font-bold text-slate-900 mt-2">
-                    Approval Akun Pemilik Cafe
+                    Data Pemilik
                 </h1>
 
                 <p class="text-slate-500 mt-3">
@@ -76,6 +76,53 @@
                                                     </button>
                                                 </form>
                                             @endif
+
+                                            <div x-data="{ open: false }">
+                                                <button type="button" @click="open = true"
+                                                    class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2 rounded-xl font-bold transition">
+                                                    Delete
+                                                </button>
+                                            
+                                                <div x-show="open" 
+                                                     class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                                                     x-transition:enter="transition ease-out duration-300"
+                                                     x-transition:enter-start="opacity-0"
+                                                     x-transition:enter-end="opacity-100"
+                                                     x-transition:leave="transition ease-in duration-200"
+                                                     x-transition:leave-start="opacity-100"
+                                                     x-transition:leave-end="opacity-0"
+                                                     style="display: none;">
+                                                     
+                                                    <div class="bg-white rounded-3xl p-8 shadow-xl max-w-sm w-full mx-4"
+                                                         @click.outside="open = false"
+                                                         x-transition:enter="transition ease-out duration-300"
+                                                         x-transition:enter-start="opacity-0 translate-y-4 sm:scale-95"
+                                                         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                         x-transition:leave="transition ease-in duration-200"
+                                                         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                                                         x-transition:leave-end="opacity-0 translate-y-4 sm:scale-95">
+                                                         
+                                                        <h3 class="text-xl font-bold text-slate-900 text-center mb-6">
+                                                            apakah anda ingin menghapus akun
+                                                        </h3>
+                                                        
+                                                        <div class="flex justify-center gap-4">
+                                                            <form action="{{ route('admin.users.delete', $user->id) }}" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" 
+                                                                        class="px-8 py-3 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 transition">
+                                                                    Iya
+                                                                </button>
+                                                            </form>
+                                                            <button type="button" @click="open = false" 
+                                                                    class="px-8 py-3 rounded-xl font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">
+                                                                Tidak
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
